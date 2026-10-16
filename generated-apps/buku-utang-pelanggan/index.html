@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buku Utang Pelanggan</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="brand-title">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <h1>Catatan Utang</h1>
+        </div>
+        <button id="btnOpenAddModal" class="btn btn-primary">
+          <i class="fa-solid fa-plus"></i> Tambah Utang
+        </button>
+      </div>
+    </header>
+
+    <!-- Summary Cards -->
+    <section class="summary-grid">
+      <div class="summary-card unpaid">
+        <div class="icon-box"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <div class="summary-info">
+          <span class="label">Belum Lunas</span>
+          <h3 id="totalUnpaid">Rp 0</h3>
+          <span class="subtext" id="countUnpaid">0 Pelanggan</span>
+        </div>
+      </div>
+      <div class="summary-card paid">
+        <div class="icon-box"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="summary-info">
+          <span class="label">Sudah Dilunasi</span>
+          <h3 id="totalPaid">Rp 0</h3>
+          <span class="subtext" id="countPaid">0 Catatan</span>
+        </div>
+      </div>
+      <div class="summary-card customers">
+        <div class="icon-box"><i class="fa-solid fa-users"></i></div>
+        <div class="summary-info">
+          <span class="label">Total Data</span>
+          <h3 id="totalRecords">0</h3>
+          <span class="subtext">Catatan Transaksi</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search and Filter Bar -->
+    <section class="filter-section">
+      <div class="search-wrapper">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Cari nama pelanggan atau barang...">
+      </div>
+      <div class="filter-chips">
+        <button class="chip active" data-status="all">Semua</button>
+        <button class="chip" data-status="unpaid">Belum Lunas</button>
+        <button class="chip" data-status="paid">Lunas</button>
+      </div>
+    </section>
+
+    <!-- Debt List -->
+    <main class="debt-list-container">
+      <div class="list-header">
+        <h2>Daftar Kasbon & Utang</h2>
+      </div>
+      <div id="debtList" class="debt-cards-list">
+        <!-- Dynamic Content -->
+      </div>
+      <div id="emptyState" class="empty-state hidden">
+        <i class="fa-solid fa-receipt"></i>
+        <p>Belum ada catatan utang yang sesuai.</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Form Tambah Utang -->
+  <div id="debtModal" class="modal-overlay hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modalTitle">Catat Utang Baru</h3>
+        <button class="close-btn" id="btnCloseModal">&times;</button>
+      </div>
+      <form id="debtForm" class="modal-body">
+        <input type="hidden" id="debtId">
+        
+        <div class="form-group">
+          <label for="customerName">Nama Pelanggan <span class="req">*</span></label>
+          <input type="text" id="customerName" required placeholder="Contoh: Budi Santoso">
+        </div>
+
+        <div class="form-group">
+          <label for="customerPhone">Nomor WhatsApp (Opsional)</label>
+          <input type="tel" id="customerPhone" placeholder="Contoh: 08123456789">
+          <small class="help-text">Gunakan nomor WhatsApp aktif untuk kemudahan tagihan</small>
+        </div>
+
+        <div class="form-group">
+          <label for="debtAmount">Jumlah Utang (Rp) <span class="req">*</span></label>
+          <input type="number" id="debtAmount" required min="100" placeholder="Contoh: 50000">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="debtDate">Tanggal Transaksi <span class="req">*</span></label>
+            <input type="date" id="debtDate" required>
+          </div>
+          <div class="form-group half">
+            <label for="dueDate">Jatuh Tempo (Opsional)</label>
+            <input type="date" id="dueDate">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="debtDesc">Keterangan / Rincian Barang</label>
+          <textarea id="debtDesc" rows="2" placeholder="Contoh: Beras 5kg, Telur 1kg, Minyak goreng"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelForm">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Utang</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Bayar / Cicil Utang -->
+  <div id="paymentModal" class="modal-overlay hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Catat Pembayaran</h3>
+        <button class="close-btn" id="btnClosePayModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="pay-summary-box">
+          <p>Pelanggan: <strong id="payCustomerName">-</strong></p>
+          <p>Sisa Tagihan: <strong id="payRemainingAmount" class="text-danger">Rp 0</strong></p>
+        </div>
+
+        <form id="payForm">
+          <input type="hidden" id="payRecordId">
+          <div class="form-group">
+            <label for="payAmount">Nominal Pembayaran (Rp) <span class="req">*</span></label>
+            <input type="number" id="payAmount" required min="100" placeholder="Masukkan jumlah bayar">
+            <div class="quick-pay-btns">
+              <button type="button" class="btn-chip" id="btnPayFull">Bayar Penuh (Lunas)</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="payDate">Tanggal Pembayaran <span class="req">*</span></label>
+            <input type="date" id="payDate" required>
+          </div>
+
+          <div class="form-group">
+            <label for="payNote">Catatan Pembayaran (Opsional)</label>
+            <input type="text" id="payNote" placeholder="Contoh: Transfer BCA / Tunai">
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="btnCancelPay">Batal</button>
+            <button type="submit" class="btn btn-success">Simpan Pembayaran</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Riwayat Pembayaran -->
+  <div id="historyModal" class="modal-overlay hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="histTitle">Riwayat Pembayaran</h3>
+        <button class="close-btn" id="btnCloseHistModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="historyDetails" class="history-info-box"></div>
+        <div class="history-timeline" id="historyList">
+          <!-- Dynamic history -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCloseHistoryBottom">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
