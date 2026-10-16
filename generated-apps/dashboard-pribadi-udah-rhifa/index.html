@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dashboard Udah Rhifa</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header-card">
+      <div class="user-profile">
+        <div class="avatar"><i class="fa-solid fa-user-astronaut"></i></div>
+        <div class="user-info">
+          <span class="greeting">Halo, Pemilikku!</span>
+          <h1 id="user-name">Udah Rhifa</h1>
+        </div>
+      </div>
+      <div class="clock-widget">
+        <div id="clock-time">00:00:00</div>
+        <div id="clock-date">Senin, 1 Januari 2025</div>
+      </div>
+    </header>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('tasks')">
+        <i class="fa-solid fa-square-check"></i> Tugas
+      </button>
+      <button class="tab-btn" onclick="switchTab('notes')">
+        <i class="fa-solid fa-note-sticky"></i> Catatan
+      </button>
+      <button class="tab-btn" onclick="switchTab('finance')">
+        <i class="fa-solid fa-wallet"></i> Keuangan
+      </button>
+    </nav>
+
+    <!-- Tab Content: Tugas -->
+    <main id="tab-tasks" class="tab-content active">
+      <div class="card">
+        <h3><i class="fa-solid fa-plus-circle"></i> Tambah Tugas</h3>
+        <form id="task-form" onsubmit="addTask(event)">
+          <input type="text" id="task-input" placeholder="Apa rencana Udah Rhifa hari ini?" required>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-list-check"></i> Daftar Tugas</h3>
+          <span id="task-counter" class="badge">0/0</span>
+        </div>
+        <ul id="task-list" class="item-list"></ul>
+      </div>
+    </main>
+
+    <!-- Tab Content: Catatan -->
+    <main id="tab-notes" class="tab-content">
+      <div class="card">
+        <h3><i class="fa-solid fa-pen-to-square"></i> Catatan Baru</h3>
+        <form id="note-form" onsubmit="addNote(event)">
+          <input type="text" id="note-title" placeholder="Judul catatan..." required>
+          <textarea id="note-body" rows="3" placeholder="Tulis ide atau catatan di sini..." required></textarea>
+          <button type="submit" class="btn btn-primary btn-block">Simpan Catatan</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3><i class="fa-solid fa-book-open"></i> Catatan Tersimpan</h3>
+        <div id="notes-grid" class="notes-grid"></div>
+      </div>
+    </main>
+
+    <!-- Tab Content: Keuangan -->
+    <main id="tab-finance" class="tab-content">
+      <div class="finance-summary-grid">
+        <div class="summary-card balance">
+          <span>Saldo Total</span>
+          <h2 id="finance-balance">Rp 0</h2>
+        </div>
+        <div class="summary-card income">
+          <span><i class="fa-solid fa-arrow-down"></i> Pemasukan</span>
+          <h4 id="finance-income">Rp 0</h4>
+        </div>
+        <div class="summary-card expense">
+          <span><i class="fa-solid fa-arrow-up"></i> Pengeluaran</span>
+          <h4 id="finance-expense">Rp 0</h4>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fa-solid fa-circle-plus"></i> Transaksi Baru</h3>
+        <form id="finance-form" onsubmit="addTransaction(event)">
+          <div class="form-group">
+            <select id="trans-type" required>
+              <option value="income">Pemasukan (+)</option>
+              <option value="expense">Pengeluaran (-)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="text" id="trans-desc" placeholder="Keterangan (mis: Gaji, Kopi)" required>
+          </div>
+          <div class="form-group">
+            <input type="number" id="trans-amount" placeholder="Jumlah (Rp)" min="1" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Tambah Transaksi</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transaksi</h3>
+        <ul id="finance-list" class="item-list"></ul>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
