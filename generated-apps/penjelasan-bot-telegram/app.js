@@ -1,0 +1,1 @@
+document.getElementById('btnKembali').addEventListener('click', function() { alert('Silakan ketik perintah baru di chat Telegram untuk membuat aplikasi lain.'); });
